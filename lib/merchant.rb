@@ -29,6 +29,10 @@ class Merchant
     end
   end
 
+  def successful_invoices?
+    invoices.find_all { |invoice| invoice.is_paid_in_full? }
+  end
+
   def created_month
     month = created_at.split('-')[1].strip.to_i
     case month
