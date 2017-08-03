@@ -7,8 +7,8 @@ class Customer
   def initialize(data, cr = nil)
     @cr               = cr
     @id               = data[:id].to_i
-    @first_name       = data[:first_name]
-    @last_name        = data[:last_name]
+    @first_name       = data[:first_name].to_s
+    @last_name        = data[:last_name].to_s
     @created_at       = Time.parse(data[:created_at])
     @updated_at       = Time.parse(data[:updated_at])
   end
