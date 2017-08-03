@@ -184,7 +184,6 @@ class SalesAnalyst
 
   def merchants_with_only_one_item
     sales_engine.items.all.group_by { |merchant| merchant.id }
-
     merchant_items = sales_engine.items.all.group_by { | item | item.merchant_id }
     merchants_with_only_one_item = []
     merchant_items.each do |key, value|
@@ -215,7 +214,6 @@ class SalesAnalyst
   def most_sold_item_for_merchant(merchant_id)
     most_sold = Hash.new(0)
     merchant = sales_engine.merchants.find_by_id(merchant_id)
-
     merchant.successful_invoices?.map do |invoice|
       invoice.invoice_items.map do |invoice_item|
         most_sold[invoice_item.item_id] += invoice_item.quantity
@@ -241,24 +239,22 @@ class SalesAnalyst
     end.compact
   end
 
-  # def most_sold_item_for_merchant(merchant_id)
-  #   merchant = sales_engine.fetch_merchant_id(merchant_id)
-  #   invoices_by_merchant = sales_engine.paid_invoices.group_by { |invoice| invoice.merchant_id }
-  #   invoices_by_merchant[merchant_id].
-  #   end
-  #   invoice_items = merchant_invoices.map do |invoice|
-  #     invoice.invoice_items
-  #   end.flatten
-  #   merchant_invoice_items = invoice_items.group_by { |item| item.item_id }
-  #   merchant_items = merchant_invoice_items.each do |key, value|
-  #     merchant_invoice_items[key] = value[0].quantity
-  #   end
-  #   top_items = merchant_items.keys.select do |key|
-  #     merchant_items[key] == merchant_items.values.max
-  #   end
-  #   top_items.map do |id|
-  #     sales_engine.items.find_by_id(id)
-  #   end.uniq
-  # end
+  def best_item_for_merchant(merchant_id)
+    items = Hash.new
+    merchant = sales_engine.fetch_merchant(merchant_id)
+    merchant.successful_invoices?.map do |invoice|
+      invoice.invoice_items.map do |invoice_item|
+        if items[invoice_item.item_id] == invoice_item
+          items[invoice_item.item_id] += (invoice_item.quantity * invoice_item.unit_price)
+        else
+          items[invoice_item.item_id] = (invoice_item.quantity * invoice_item.unit_price)
+        end
+      end
+    end
+    top_item = items.max_by do |item|
+      item[1]
+    end
+    sales_engine.items.find_by_id(top_item[0])
+  end
 
 end
