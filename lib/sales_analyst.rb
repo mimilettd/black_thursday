@@ -213,23 +213,52 @@ class SalesAnalyst
   end
 
   def most_sold_item_for_merchant(merchant_id)
-    merchant = sales_engine.fetch_merchant_id(merchant_id)
-    invoices_by_merchant = sales_engine.paid_invoices.group_by { |invoice| invoice.merchant_id }
-    invoices_by_merchant[merchant_id].
+    most_sold = Hash.new(0)
+    merchant = sales_engine.merchants.find_by_id(merchant_id)
+
+    merchant.successful_invoices?.map do |invoice|
+      invoice.invoice_items.map do |invoice_item|
+        most_sold[invoice_item.item_id] += invoice_item.quantity
+      end
     end
-    invoice_items = merchant_invoices.map do |invoice|
-      invoice.invoice_items
-    end.flatten
-    merchant_invoice_items = invoice_items.group_by { |item| item.item_id }
-    merchant_items = merchant_invoice_items.each do |key, value|
-      merchant_invoice_items[key] = value[0].quantity
-    end
-    top_items = merchant_items.keys.select do |key|
-      merchant_items[key] == merchant_items.values.max
-    end
-    top_items.map do |id|
-      sales_engine.items.find_by_id(id)
-    end.uniq
+    iterate_most_sold_item(most_sold)
   end
+
+  def iterate_most_sold_item(hash)
+    grab = hash.sort_by do |group|
+      group[1]
+    end
+    top = grab[-1]
+    items = grab.find_all do |item|
+      item[1] == top[1]
+    end
+    collect_most_sold_items(items)
+  end
+
+  def collect_most_sold_items(item_ids)
+    item_ids.map do |item|
+      sales_engine.items.find_by_id(item[0])
+    end.compact
+  end
+
+  # def most_sold_item_for_merchant(merchant_id)
+  #   merchant = sales_engine.fetch_merchant_id(merchant_id)
+  #   invoices_by_merchant = sales_engine.paid_invoices.group_by { |invoice| invoice.merchant_id }
+  #   invoices_by_merchant[merchant_id].
+  #   end
+  #   invoice_items = merchant_invoices.map do |invoice|
+  #     invoice.invoice_items
+  #   end.flatten
+  #   merchant_invoice_items = invoice_items.group_by { |item| item.item_id }
+  #   merchant_items = merchant_invoice_items.each do |key, value|
+  #     merchant_invoice_items[key] = value[0].quantity
+  #   end
+  #   top_items = merchant_items.keys.select do |key|
+  #     merchant_items[key] == merchant_items.values.max
+  #   end
+  #   top_items.map do |id|
+  #     sales_engine.items.find_by_id(id)
+  #   end.uniq
+  # end
 
 end

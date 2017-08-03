@@ -28,9 +28,9 @@ class Invoice
     @invoice_repo.fetch_invoice_id_for_transactions(id)
   end
 
-  def invoice_items
-    @invoice_repo.sales_engine.invoice_items.find_all_by_invoice_id(id)
-  end
+  # def invoice_items
+  #   @invoice_repo.sales_engine.invoice_items.find_all_by_invoice_id(id)
+  # end
 
   def customer
     @invoice_repo.fetch_invoice_id_for_customers(customer_id)
