@@ -5,8 +5,8 @@ class Merchant
                 :updated_at
   def initialize(data, mr = nil)
     @mr   = mr
-    @id   = data[:id]
-    @name = data[:name]
+    @id   = data[:id].to_i
+    @name = data[:name].to_s
     @created_at  = data[:created_at]
     @updated_at  = data[:updated_at]
   end
