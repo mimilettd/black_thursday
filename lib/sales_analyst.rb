@@ -184,9 +184,9 @@ class SalesAnalyst
 
   def merchants_with_only_one_item
     sales_engine.items.all.group_by { |merchant| merchant.id }
-    merchant_items = sales_engine.items.all.group_by { | item | item.merchant_id }
+    m_items = sales_engine.items.all.group_by { | item | item.merchant_id }
     merchants_with_only_one_item = []
-    merchant_items.each do |key, value|
+    m_items.each do |key, value|
       if value.count == 1
         merchants_with_only_one_item << key
       end
@@ -243,11 +243,11 @@ class SalesAnalyst
     items = Hash.new
     merchant = sales_engine.fetch_merchant(merchant_id)
     merchant.successful_invoices?.map do |invoice|
-      invoice.invoice_items.map do |invoice_item|
-        if items[invoice_item.item_id] == invoice_item
-          items[invoice_item.item_id] += (invoice_item.quantity * invoice_item.unit_price)
+      invoice.invoice_items.map do |ii|
+        if items[ii.item_id] == ii
+          items[ii.item_id] += (ii.quantity * ii.unit_price)
         else
-          items[invoice_item.item_id] = (invoice_item.quantity * invoice_item.unit_price)
+          items[ii.item_id] = (ii.quantity * ii.unit_price)
         end
       end
     end

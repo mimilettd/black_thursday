@@ -87,8 +87,8 @@ class SalesEngine
   end
 
   def top_revenue_earners(x)
-    paid_invoices = @invoices.all.group_by { |invoice| invoice.is_paid_in_full? }
-    merchant_invoices = paid_invoices[true].group_by { |invoice| invoice.merchant_id }
+    p_i = @invoices.all.group_by { |invoice| invoice.is_paid_in_full? }
+    merchant_invoices = p_i[true].group_by { |invoice| invoice.merchant_id }
     merchant_invoices.each_value do |invoices|
       invoices.map! { |invoice| invoice.total }
     end
