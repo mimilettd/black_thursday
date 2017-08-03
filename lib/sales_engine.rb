@@ -106,12 +106,12 @@ class SalesEngine
   end
 
   def merchants_ranked_by_revenue
-    merchant_invoices = paid_invoices.group_by { |invoice| invoice.merchant_id }
-    merchant_invoices.each_value do |invoices|
+    mv = paid_invoices.group_by { |invoice| invoice.merchant_id }
+    mv.each_value do |invoices|
       invoices.map! { |invoice| invoice.total }
     end
-    total_revenue = merchant_invoices.keys.sort_by do |merchant_id|
-      merchant_invoices[merchant_id].reduce(:+)
+    total_revenue = mv.keys.sort_by do |merchant_id|
+      mv[merchant_id].reduce(:+)
     end
     total_revenue.map! do |merchant_id|
       fetch_merchant(merchant_id)
