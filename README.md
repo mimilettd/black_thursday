@@ -4,10 +4,10 @@ This project builds a system able to load, parse, search, and execute business i
 
 ## Getting Started
 
-To clone and run this application, you'll need Ruby installed on your computer. From your command line:
+To clone and run this application, you'll need Ruby installed on your computer. Once you have Ruby installed, from your command line, run:
 ```
 # Clone this repository
-$ https://github.com/mimilettd/black_thursday.git
+$ git clone https://github.com/mimilettd/black_thursday.git
 
 # Go into the repository
 $ cd black_thursday
